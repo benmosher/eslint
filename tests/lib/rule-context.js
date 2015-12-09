@@ -9,7 +9,8 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-var sinon = require("sinon"),
+var assert = require("chai").assert,
+    sinon = require("sinon"),
     leche = require("leche"),
     realESLint = require("../../lib/eslint"),
     RuleContext = require("../../lib/rule-context");
@@ -26,7 +27,7 @@ describe("RuleContext", function() {
 
         beforeEach(function() {
             eslint = leche.fake(realESLint);
-            ruleContext = new RuleContext("fake-rule", eslint, 2, {}, {}, {});
+            ruleContext = new RuleContext("fake-rule", eslint, 2, {}, {}, {}, "espree", require("espree"));
         });
 
         describe("old-style call with location", function() {
@@ -91,6 +92,18 @@ describe("RuleContext", function() {
 
                 fix.verify();
                 mockESLint.verify();
+            });
+        });
+
+        describe("parser", function() {
+            it("is present", function() {
+                assert.isObject(ruleContext.parser);
+            });
+            it("should have a 'require'd parser", function() {
+                assert.isFunction(ruleContext.parser.parse);
+            });
+            it("should have the parser name as the `parserName` field.", function() {
+                assert.equal(ruleContext.parserName, "espree");
             });
         });
     });
