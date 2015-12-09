@@ -9,7 +9,8 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-var sinon = require("sinon"),
+var assert = require("chai").assert,
+    sinon = require("sinon"),
     leche = require("leche"),
     realESLint = require("../../lib/eslint"),
     RuleContext = require("../../lib/rule-context");
@@ -19,15 +20,15 @@ var sinon = require("sinon"),
 //------------------------------------------------------------------------------
 
 describe("RuleContext", function() {
-    var sandbox = sinon.sandbox.create();
+    var sandbox = sinon.sandbox.create(),
+        ruleContext, eslint;
+
+    beforeEach(function() {
+        eslint = leche.fake(realESLint);
+        ruleContext = new RuleContext("fake-rule", eslint, 2, {}, {}, {}, require("espree").parse);
+    });
 
     describe("report()", function() {
-        var ruleContext, eslint;
-
-        beforeEach(function() {
-            eslint = leche.fake(realESLint);
-            ruleContext = new RuleContext("fake-rule", eslint, 2, {}, {}, {});
-        });
 
         describe("old-style call with location", function() {
             it("should call eslint.report() with rule ID and severity prepended", function() {
@@ -92,6 +93,16 @@ describe("RuleContext", function() {
                 fix.verify();
                 mockESLint.verify();
             });
+        });
+
+    });
+
+    describe("parse()", function() {
+        it("is present", function() {
+            assert.isFunction(ruleContext.parse);
+        });
+        it("works", function() {
+            assert.isObject(ruleContext.parse("function answer() { return 42; }"));
         });
     });
 

@@ -3193,7 +3193,7 @@ describe("eslint", function() {
                 var messages = eslint.verify(code, { parser: "esprima-fbxyz" }, "filename");
                 assert.equal(messages.length, 1);
                 assert.equal(messages[0].severity, 2);
-                assert.equal(messages[0].message, "Cannot find module 'esprima-fbxyz'");
+                assert.equal(messages[0].message, "Parsing error: Cannot find module 'esprima-fbxyz'");
             });
 
             it("should strip leading line: prefix from parser error", function() {
